@@ -52,3 +52,8 @@ if st.sidebar.button("Calculate Story Points"):
     st.write(f"**Story Points:** {story_points}")
     st.write(f"**Complexity Level:** {complexity_level}")
     st.write(f"**Suggested Sprint Length:** {suggested_sprint}")
+
+# Footer with Copyright Notice
+st.markdown("---")
+st.markdown("© 2024 Rise Informatics. All Rights Reserved.")
+
