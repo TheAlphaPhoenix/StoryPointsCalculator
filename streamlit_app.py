@@ -1,70 +1,54 @@
-// Backend Velo (Wix) Code for Story Points Calculator - Enhanced UI Version
+import streamlit as st
 
-// Function to calculate story points based on user input
-export function calculateStoryPoints(scope, stakeholders, compliance, dataAnalysis, operations, timeCommitment, risk) {
-    const scores = {
-        "Low": 1,
-        "Medium": 3,
-        "High": 5
-    };
+def calculate_story_points(scope, stakeholders, compliance, data_analysis, operations, time_commitment, risk):
+    scores = {"Low": 1, "Medium": 3, "High": 5}
     
-    // Calculate total score based on inputs
-    let totalScore = scores[scope] + scores[stakeholders] + scores[compliance] + 
-                     scores[dataAnalysis] + scores[operations] + scores[timeCommitment] + scores[risk];
+    # Calculate total score based on inputs
+    total_score = (scores[scope] + scores[stakeholders] + scores[compliance] + 
+                   scores[data_analysis] + scores[operations] + scores[time_commitment] + scores[risk])
     
-    // Map total score to Fibonacci-based story points
-    let storyPoints;
-    if (totalScore <= 8) {
-        storyPoints = 1;
-    } else if (totalScore <= 12) {
-        storyPoints = 2;
-    } else if (totalScore <= 16) {
-        storyPoints = 3;
-    } else if (totalScore <= 22) {
-        storyPoints = 5;
-    } else if (totalScore <= 28) {
-        storyPoints = 8;
-    } else if (totalScore <= 34) {
-        storyPoints = 13;
-    } else {
-        storyPoints = 21;
-    }
+    # Map total score to Fibonacci-based story points
+    if total_score <= 8:
+        story_points = 1
+    elif total_score <= 12:
+        story_points = 2
+    elif total_score <= 16:
+        story_points = 3
+    elif total_score <= 22:
+        story_points = 5
+    elif total_score <= 28:
+        story_points = 8
+    elif total_score <= 34:
+        story_points = 13
+    else:
+        story_points = 21
     
-    return {
-        totalScore: totalScore,
-        storyPoints: storyPoints,
-        complexityLevel: storyPoints <= 3 ? "Simple" : storyPoints <= 8 ? "Moderate" : "Complex",
-        suggestedSprint: storyPoints <= 5 ? "Short-Term" : storyPoints <= 13 ? "Mid-Term" : "Long-Term"
-    };
-}
+    complexity_level = "Simple" if story_points <= 3 else "Moderate" if story_points <= 8 else "Complex"
+    suggested_sprint = "Short-Term" if story_points <= 5 else "Mid-Term" if story_points <= 13 else "Long-Term"
+    
+    return total_score, story_points, complexity_level, suggested_sprint
 
-// Frontend Code - Enhanced UI Styling
-$w.onReady(function () {
-    $w("#calculateButton").onClick(() => {
-        let scope = $w("#dropdownScope").value;
-        let stakeholders = $w("#dropdownStakeholders").value;
-        let compliance = $w("#dropdownCompliance").value;
-        let dataAnalysis = $w("#dropdownDataAnalysis").value;
-        let operations = $w("#dropdownOperations").value;
-        let timeCommitment = $w("#dropdownTimeCommitment").value;
-        let risk = $w("#dropdownRisk").value;
+# Streamlit UI
+st.title("Story Points Calculator")
 
-        let result = calculateStoryPoints(scope, stakeholders, compliance, dataAnalysis, operations, timeCommitment, risk);
-        
-        // Apply Modern UI Enhancements
-        $w("#textTotalScore").text = `Total Score: ${result.totalScore}`;
-        $w("#textTotalScore").style.color = "#00A8E8";
-        $w("#textTotalScore").style.fontSize = "18px";
+st.sidebar.header("Select Complexity Levels")
+options = ["Low", "Medium", "High"]
 
-        $w("#textStoryPoints").text = `Story Points: ${result.storyPoints}`;
-        $w("#textStoryPoints").style.color = "#FF5733";
-        $w("#textStoryPoints").style.fontSize = "20px";
-        $w("#textStoryPoints").style.fontWeight = "bold";
-        
-        $w("#textComplexity").text = `Complexity Level: ${result.complexityLevel}`;
-        $w("#textComplexity").style.color = "#2ECC71";
+scope = st.sidebar.selectbox("Scope Complexity", options)
+stakeholders = st.sidebar.selectbox("Stakeholder Engagement", options)
+compliance = st.sidebar.selectbox("Regulatory & Compliance Complexity", options)
+data_analysis = st.sidebar.selectbox("Data Analysis & Financial Modeling", options)
+operations = st.sidebar.selectbox("Operational Change & Implementation Effort", options)
+time_commitment = st.sidebar.selectbox("Time Commitment", options)
+risk = st.sidebar.selectbox("Risk & Uncertainty", options)
 
-        $w("#textSprint").text = `Suggested Sprint Length: ${result.suggestedSprint}`;
-        $w("#textSprint").style.color = "#F39C12";
-    });
-});
+if st.sidebar.button("Calculate Story Points"):
+    total_score, story_points, complexity_level, suggested_sprint = calculate_story_points(
+        scope, stakeholders, compliance, data_analysis, operations, time_commitment, risk
+    )
+    
+    st.subheader("Results")
+    st.write(f"**Total Score:** {total_score}")
+    st.write(f"**Story Points:** {story_points}")
+    st.write(f"**Complexity Level:** {complexity_level}")
+    st.write(f"**Suggested Sprint Length:** {suggested_sprint}")
